@@ -2,7 +2,7 @@
 - `brew cask install dockertoolbox`
 - `brew install rabbitmq-server`
 
-### Run Locally (On Mac)
+### Run Locally
 - `gradle installDist`
 - `./build/install/scalaz-rabbitmq-bug/bin/scalaz-rabbitmq-bug`
 - Output I see:
