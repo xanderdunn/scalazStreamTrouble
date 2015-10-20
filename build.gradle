@@ -1,0 +1,26 @@
+apply plugin: 'java'
+apply plugin: 'scala'
+apply plugin: 'application'
+
+mainClassName = 'scalazproblem.Main'
+
+repositories {
+    mavenCentral()
+    mavenLocal()
+    jcenter()
+}
+
+sourceCompatibility = 1.7
+
+dependencies {
+    // programming tools
+    compile "org.scala-lang:scala-library:$scalaVersion"                        // dependency for scalabuff-gradle
+    compile "org.scalaz:scalaz-core_2.11:$scalazVersion"                        // functional programming
+    compile "org.scalaz:scalaz-effect_2.11:$scalazVersion"                      // functional programming side effects
+    compile "org.scalaz.stream:scalaz-stream_2.11:0.8"                          // asynchronous IO
+    compile "ch.qos.logback:logback-classic:$logbackVersion"                    // scala-logging dependency
+    compile "com.typesafe.scala-logging:scala-logging_2.11:$scalaLoggingVersion"// logging framework
+    
+    // communication
+    compile "com.rabbitmq:amqp-client:$rabbitMQVersion"                       // official Java RabbitMQ library
+}
