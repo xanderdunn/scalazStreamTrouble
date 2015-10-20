@@ -1,5 +1,4 @@
 package scalazproblem
-/** An app that drives domains (i.e. pong), imitation learners, reinforcement learners, and neural nets and facilitates communication between them. */
 
 // System
 import scala.collection.mutable
