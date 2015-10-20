@@ -8,7 +8,7 @@
 - Output I see:
 
 ```
-ip-10-24-0-108:scalaz-rabbitmq-bug admin$ ./build/install/scalaz-rabbitmq-bug/bin/scalaz-rabbitmq-bug
+admin$ ./build/install/scalaz-rabbitmq-bug/bin/scalaz-rabbitmq-bug
 13:37:41.457 [pool-3-thread-6] INFO  scalazproblem.Main$ - Waiting to receive a message...
 13:37:42.410 [pool-3-thread-7] INFO  scalazproblem.Main$ - Sending Message1
 13:37:42.415 [pool-3-thread-8] INFO  scalazproblem.Main$ - Received message Message1
@@ -31,7 +31,7 @@ ip-10-24-0-108:scalaz-rabbitmq-bug admin$ ./build/install/scalaz-rabbitmq-bug/bi
 - Output I see:
 
 ```
-ip-10-24-0-108:scalaz-rabbitmq-bug admin$ docker run --rm $USER/scalaztest bash /start.sh
+admin$ docker run --rm $USER/scalaztest bash /start.sh
 Warning: PID file not written; -detached was passed.
 20:34:27.989 [pool-3-thread-1] INFO  scalazproblem.Main$ - Waiting to receive a message...
 <application hangs endlessly>
