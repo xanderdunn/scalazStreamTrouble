@@ -38,7 +38,7 @@ object Main extends LazyLogging {
   }
   def stringsToSend(publisher: RabbitMQProvider): Process[Task, Unit] = Process("Message1", "Message2", "Message3", "Message4") flatMap { message =>
     Process eval Task {
-      Thread.sleep(1000)
+      Thread.sleep(50)
       logger.info(s"Sending ${message}")
       send(message, publisher)
     }
@@ -58,9 +58,10 @@ object Main extends LazyLogging {
 
   def receive(consumer: QueueingConsumer) : Task[String] = {
     Task {
-      logger.info("Waiting to receive a message...")
-      val message = consumer.nextDelivery().getBody()
-      new String(message, "UTF-8")
+      logger.info("Receiving a stub")
+      //val message = consumer.nextDelivery().getBody()
+      //new String(message, "UTF-8")
+      "Stub"
     }
   }
 
