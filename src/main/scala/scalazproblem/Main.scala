@@ -7,6 +7,7 @@ import scala.collection.mutable
 // Third Party
 import com.typesafe.scalalogging.LazyLogging
 import scalaz.{\/, -\/, \/-}
+import scalaz.\/.right
 import scalaz.stream.{Process, wye}
 import scalaz.concurrent.Task
 import com.rabbitmq.client.{Connection, ConnectionFactory, Channel, QueueingConsumer}
@@ -51,16 +52,16 @@ object Main extends LazyLogging {
     provider.connection.close()
   }
 
-  // RabbitMQ Boilerplate
+  // RabbitMQ
   def send(message: String, publisherProvider: RabbitMQProvider) : Unit = {
     publisherProvider.channel.basicPublish("", queueName, null, message.getBytes())
   }
 
   def receive(consumer: QueueingConsumer) : Task[String] = {
-    Task {
+    Task async { callback =>
       logger.info("Waiting to receive a message...")
       val message = consumer.nextDelivery().getBody()
-      new String(message, "UTF-8")
+      callback(right(new String(message, "UTF-8")))
     }
   }
 
