@@ -2,12 +2,13 @@ package scalazproblem
 
 // System
 import scala.collection.mutable
+import java.util.concurrent.{ExecutorService, Executors, ThreadFactory}
 
 // Third Party
 import com.typesafe.scalalogging.LazyLogging
 import scalaz.{\/, -\/, \/-}
 import scalaz.stream.{Process, wye}
-import scalaz.concurrent.Task
+import scalaz.concurrent.{Task, Strategy, Strategys}
 import com.rabbitmq.client.{Connection, ConnectionFactory, Channel, QueueingConsumer}
 
 case class RabbitMQProvider(connection: Connection, channel: Channel, channelName: String)
@@ -21,7 +22,7 @@ object Main extends LazyLogging {
     val consumer = new QueueingConsumer(provider.channel)
     provider.channel.basicConsume(queueName, true, consumer)
 
-    (receivedStrings(consumer) wye stringsToSend(provider))(wye.mergeHaltBoth).run.runAsync {
+    (receivedStrings(consumer) wye stringsToSend(provider))(wye.mergeHaltBoth)(Strategy.Executor(CustomStrategy.CustomService)).run.runAsync {
       case -\/(error) => {
         logger.error(s"Oops ${error}")
       }
@@ -70,5 +71,23 @@ object Main extends LazyLogging {
     val channel : Channel = connection.createChannel()
     channel.queueDeclare(queueName, false, false, true, null)
     RabbitMQProvider(connection, channel, queueName)
+  }
+}
+
+object CustomStrategy {
+ val DefaultDaemonThreadFactory = new ThreadFactory {
+    val defaultThreadFactory = Executors.defaultThreadFactory()
+    def newThread(r: Runnable) = {
+      val t = defaultThreadFactory.newThread(r)
+      t.setDaemon(true)
+      t
+    }
+  }
+
+  val CustomService: ExecutorService = {
+    val minimumThreads = 4
+    val availableProcessors = Runtime.getRuntime.availableProcessors
+    val daemonThreads = if (availableProcessors > minimumThreads) availableProcessors else minimumThreads
+    Executors.newFixedThreadPool(daemonThreads, DefaultDaemonThreadFactory)
   }
 }
