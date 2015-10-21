@@ -8,6 +8,7 @@ import com.typesafe.scalalogging.LazyLogging
 import scalaz.{\/, -\/, \/-}
 import scalaz.stream.{Process, wye}
 import scalaz.concurrent.Task
+import rx.lang.scala.Observable
 import com.rabbitmq.client.{Connection, ConnectionFactory, Channel, QueueingConsumer}
 
 case class RabbitMQProvider(connection: Connection, channel: Channel, channelName: String)
@@ -21,20 +22,49 @@ object Main extends LazyLogging {
     val consumer = new QueueingConsumer(provider.channel)
     provider.channel.basicConsume(queueName, true, consumer)
 
-    (receivedStrings(consumer) wye stringsToSend(provider))(wye.mergeHaltBoth).run.runAsync {
+    receive(consumer).subscribe(
+    {message => {  // onNext
+      logger.info(s"Received message ${message.get}")
+    }},
+    {null}, // onError
+    {() =>  // onCompleted
+        cleanup(provider, consumer)
+    })
+
+    stringsToSend(provider).run.runAsync {
       case -\/(error) => {
         logger.error(s"Oops ${error}")
       }
-      case \/-(info) => { cleanup(provider, consumer) }
+      case \/-(info) => { }
     }
   }
 
-  // scalaz-stream
-  def receivedStrings(consumer: QueueingConsumer): Process[Task, Unit] = Process.repeatEval(receive(consumer)) flatMap { message =>
-    Process eval Task {
-      logger.info(s"Received message ${message}")
-    }
+  def receive(consumer: QueueingConsumer) : Observable[Option[String]] = {
+    Observable(
+      subscriber => {
+        new Thread(new Runnable() {
+          def run() : Unit = {
+            if (subscriber.isUnsubscribed) {
+              return
+            }
+            var count = 0
+            while(count < 4) {
+              val message = consumer.nextDelivery().getBody()
+              val action = new String(message, "UTF-8")
+              subscriber.onNext(Some(action))
+              count += 1
+            }
+            //subscriber.onNext(None)
+            if (!subscriber.isUnsubscribed) {
+              subscriber.onCompleted()
+            }
+          }
+        }).start()
+      }
+    )
   }
+
+  // scalaz-stream
   def stringsToSend(publisher: RabbitMQProvider): Process[Task, Unit] = Process("Message1", "Message2", "Message3", "Message4") flatMap { message =>
     Process eval Task {
       Thread.sleep(1000)
@@ -53,14 +83,6 @@ object Main extends LazyLogging {
   // RabbitMQ Boilerplate
   def send(message: String, publisherProvider: RabbitMQProvider) : Unit = {
     publisherProvider.channel.basicPublish("", queueName, null, message.getBytes())
-  }
-
-  def receive(consumer: QueueingConsumer) : Task[String] = {
-    Task {
-      logger.info("Waiting to receive a message...")
-      val message = consumer.nextDelivery().getBody()
-      new String(message, "UTF-8")
-    }
   }
 
   def createProvider() : RabbitMQProvider = { // Create the RabbitMQ Publisher

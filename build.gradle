@@ -20,6 +20,7 @@ dependencies {
     compile "org.scalaz.stream:scalaz-stream_2.11:0.8"                          // asynchronous IO
     compile "ch.qos.logback:logback-classic:$logbackVersion"                    // scala-logging dependency
     compile "com.typesafe.scala-logging:scala-logging_2.11:$scalaLoggingVersion"// logging framework
+    compile "io.reactivex:rxscala_2.11:$rxScalaVersion"                         // functional reactive programming
     
     // communication
     compile "com.rabbitmq:amqp-client:$rabbitMQVersion"                       // official Java RabbitMQ library

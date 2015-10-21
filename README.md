@@ -9,19 +9,15 @@
 
 ```
 admin$ ./build/install/scalaz-rabbitmq-bug/bin/scalaz-rabbitmq-bug
-13:37:41.457 [pool-3-thread-6] INFO  scalazproblem.Main$ - Waiting to receive a message...
-13:37:42.410 [pool-3-thread-7] INFO  scalazproblem.Main$ - Sending Message1
-13:37:42.415 [pool-3-thread-8] INFO  scalazproblem.Main$ - Received message Message1
-13:37:42.426 [pool-3-thread-3] INFO  scalazproblem.Main$ - Waiting to receive a message...
-13:37:43.431 [pool-3-thread-1] INFO  scalazproblem.Main$ - Sending Message2
-13:37:43.433 [pool-3-thread-8] INFO  scalazproblem.Main$ - Received message Message2
-13:37:43.433 [pool-3-thread-6] INFO  scalazproblem.Main$ - Waiting to receive a message...
-13:37:44.437 [pool-3-thread-2] INFO  scalazproblem.Main$ - Sending Message3
-13:37:44.440 [pool-3-thread-7] INFO  scalazproblem.Main$ - Received message Message3
-13:37:44.441 [pool-3-thread-2] INFO  scalazproblem.Main$ - Waiting to receive a message...
-13:37:45.442 [pool-3-thread-5] INFO  scalazproblem.Main$ - Sending Message4
-13:37:45.444 [pool-3-thread-3] INFO  scalazproblem.Main$ - Received message Message4
-13:37:45.450 [pool-3-thread-8] INFO  scalazproblem.Main$ - Cleaning up and ending.
+11:21:43.667 [pool-3-thread-1] INFO  scalazproblem.Main$ - Sending Message1
+11:21:43.672 [Thread-0] INFO  scalazproblem.Main$ - Received message Message1
+11:21:44.690 [pool-3-thread-2] INFO  scalazproblem.Main$ - Sending Message2
+11:21:44.692 [Thread-0] INFO  scalazproblem.Main$ - Received message Message2
+11:21:45.693 [pool-3-thread-3] INFO  scalazproblem.Main$ - Sending Message3
+11:21:45.694 [Thread-0] INFO  scalazproblem.Main$ - Received message Message3
+11:21:46.694 [pool-3-thread-4] INFO  scalazproblem.Main$ - Sending Message4
+11:21:46.695 [Thread-0] INFO  scalazproblem.Main$ - Received message Message4
+11:21:46.695 [Thread-0] INFO  scalazproblem.Main$ - Cleaning up and ending.
 <application terminates>
 ```
 
@@ -33,6 +29,14 @@ admin$ ./build/install/scalaz-rabbitmq-bug/bin/scalaz-rabbitmq-bug
 ```
 admin$ docker run --rm $USER/scalaztest bash /start.sh
 Warning: PID file not written; -detached was passed.
-20:34:27.989 [pool-3-thread-1] INFO  scalazproblem.Main$ - Waiting to receive a message...
-<application hangs endlessly>
+18:17:26.127 [pool-3-thread-1] INFO  scalazproblem.Main$ - Sending Message1
+18:17:26.154 [Thread-0] INFO  scalazproblem.Main$ - Received message Message1
+18:17:27.161 [pool-3-thread-1] INFO  scalazproblem.Main$ - Sending Message2
+18:17:27.163 [Thread-0] INFO  scalazproblem.Main$ - Received message Message2
+18:17:28.165 [pool-3-thread-1] INFO  scalazproblem.Main$ - Sending Message3
+18:17:28.168 [Thread-0] INFO  scalazproblem.Main$ - Received message Message3
+18:17:29.170 [pool-3-thread-1] INFO  scalazproblem.Main$ - Sending Message4
+18:17:29.172 [Thread-0] INFO  scalazproblem.Main$ - Received message Message4
+18:17:29.172 [Thread-0] INFO  scalazproblem.Main$ - Cleaning up and ending.
+<application terminates>
 ```
